@@ -63,8 +63,8 @@ class App extends Component {
         </div>
         <div id='photos'>
           <Grid container className='actions'>
-            <span className='filter-title'>Filter: </span>
-          <Grid item xs={1} className='filter'>
+            <div className='filter-title'>Filter by dimensions: </div>
+          <Grid item xs={2} className='filter'>
             <Dropdown 
               options={filteredOptions} 
               onChange={(e) => this.handleFilterSelect(e)} 
@@ -72,7 +72,7 @@ class App extends Component {
               placeholder="Select an option" 
             />
           </Grid>
-          <Grid item xs={2} id='toggle'>
+          <Grid item xs={3} id='toggle'>
           <span id='grayscale'>
               Grayscale
             </span>
