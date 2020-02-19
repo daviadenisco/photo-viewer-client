@@ -38,8 +38,16 @@ h1 {
   margin: 0 0 0 68%;
 }
 
+.filter-title {
+  font-size: 20px;
+  padding: 10px 20px 0 0;
+}
+
 .filter {
   border: 1px solid grey;
+  border-radius: 5px;
+  font-size: 20px;
+  padding: 8px 0 0 0;
 }
 
 #toggle {

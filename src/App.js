@@ -7,11 +7,11 @@ import './App.css';
 const baseUrl = 'http://localhost:5000/urls';
 
 const filteredOptions = [  
-    { value: '300 x 200', label: '300 x 200' },
-    { value: '100 x 100', label: '100 x 100' },
-    { value: '250 x 250', label: '250 x 250' },
-    { value: '400 x 200', label: '400 x 200' },
-    { value: '300 x 300', label: '300 x 300' },
+    { value: '300/200', label: '300 x 200' },
+    { value: '100/100', label: '100 x 100' },
+    { value: '250/250', label: '250 x 250' },
+    { value: '400/200', label: '400 x 200' },
+    { value: '300/300', label: '300 x 300' },
     { value: 'viewAll', label: 'View All'}
   ];
 
@@ -26,82 +26,22 @@ class App extends Component {
   }
 
   callAPI() {
-    fetch(baseUrl)
+    fetch(baseUrl+`?dimension=${this.state.selectedFilter}`)
       .then(res => res.json())
       .then(res => {
-        // console.log('res: ', res);
         const urls = res;
-        console.log('urls: ', urls)
-        // let urlArr = []
-        // res.map(url => {
-        //   console.log('url.url: ', url.url)
-        //   if (url.url.slice(-7) === '300/200') {
-        //     urlArr.push(url)
-        //   }
-        //   console.log('urlArr: ', urlArr)
-        //   this.setState({ sz300x200: urlArr })
-        // })
-        // console.log('this.state.sz300x200: ', this.state.sz300x200);
-
-        // let sz300x200 = urls.filter(url => {
-        //   return url.url.slice(-7) === '300/200'
-        // })
-        // let sz100x100 = urls.filter(url => {
-        //   return url.url.slice(-7) === '100/100'
-        // });
-        // let sz250x250 = urls.filter(url => {
-        //   return url.url.slice(-7) === '250/250'
-        // });
-        // let sz400x200 = urls.filter(url => {
-        //   return url.url.slice(-7) === '400/200'
-        // });
-        // let sz300x300 = urls.filter(url => {
-        //   return url.url.slice(-7) === '300/300'
-        // });
         this.setState({ urls: urls });
       });
   }
 
   handleChange = () => e => {
-    if (e.target.checked) {
-      this.setState({ color: false })
-    } else if (!e.target.checked) {
-      this.setState({ color: true })
-    }
+    this.setState({ color: e.target.checked })
   };
 
-  filteredUrls = () => {
-    let urlsArr = [];
-    console.log('this.state.selectedFilter: ', this.state.selectedFilter)
-    this.state.urls.filter(url => {
-    if (this.state.selectedFilter === '300 x 200') {
-      console.log('URL: ', url)
-      urlsArr.push(url);
-      this.setState({ urls: urlsArr })
-      console.log('urlsArr: ', urlsArr)
-    };
-    if (this.state.selectedFilter === '100 x 100') {
-      urlsArr.push(url);
-      this.setState({ urls: urlsArr })
-      console.log('urlsArr: ', urlsArr)    };
-    if (this.state.selectedFilter === '250 x 250') {
-      urlsArr.push(url);
-      this.setState({ urls: urlsArr })
-      console.log('urlsArr: ', urlsArr)    };
-    if (this.state.selectedFilter === '400 x 200') {
-      urlsArr.push(url);
-      this.setState({ urls: urlsArr })
-      console.log('urlsArr: ', urlsArr)    };
-    if (this.state.selectedFilter === '300 x 300') {
-      urlsArr.push(url);
-      this.setState({ urls: urlsArr })
-      console.log('urlsArr: ', urlsArr)    };
-    return true;
-  })};
-
   handleFilterSelect = (option) => {
-    this.setState({ selectedFilter: option.value });
-    this.filteredUrls();
+    this.setState({ selectedFilter: option.value }, ()=>{
+      this.callAPI();
+    });
   };
 
   componentDidMount() {
@@ -123,26 +63,27 @@ class App extends Component {
         </div>
         <div id='photos'>
           <Grid container className='actions'>
-          <Grid item xs={2} className='filter'>
+            <span className='filter-title'>Filter: </span>
+          <Grid item xs={1} className='filter'>
             <Dropdown 
               options={filteredOptions} 
-              onChange={this.handleFilterSelect && this.filteredUrls} 
+              onChange={(e) => this.handleFilterSelect(e)} 
               value={this.state.selectedFilter} 
               placeholder="Select an option" 
-
             />
           </Grid>
           <Grid item xs={2} id='toggle'>
-            <span id='grayscale'>
+          <span id='grayscale'>
               Grayscale
             </span>
             <Switch
               id='toggle'
               defaultChecked
+              checked={this.state.color}
               value="checkedF"
               color="default"
               inputProps={{ 'aria-label': 'checkbox with default color' }}
-              onClick={this.handleChange()}
+              onChange={this.handleChange()}
             />
             <span id='color'>
               Color
@@ -159,7 +100,7 @@ class App extends Component {
                       target="_blank" 
                       rel="noopener noreferrer"
                     >
-                      <img key={key} src={this.state.urls[key].url} className='image' alt='image' />
+                      <img key={key} src={this.state.urls[key].url+(this.state.color ? '' : '?grayscale')} className='image' alt='image' />
                     </a>
                   </Grid>
                 ))}
